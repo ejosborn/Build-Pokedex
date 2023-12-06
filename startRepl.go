@@ -35,6 +35,7 @@ func startRepl(cfg *config) {
 	}
 }
 
+// takes input and normalizes it for logic
 func cleanInput(input string) []string {
 	output := strings.ToLower(input)
 	words := strings.Fields(output)
