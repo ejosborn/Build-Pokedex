@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	command     func(cfg *config) error
 }
 
 // returns commands
@@ -17,28 +18,28 @@ func getCommands() map[string]cliCommand {
 		"help": {
 			name:        "help",
 			description: "Displays a help message",
-			callback:    commandHelp,
+			command:     commandHelp,
 		},
 		"exit": {
 			name:        "exit",
 			description: "Exits the Program",
-			callback:    commandExit,
+			command:     commandExit,
 		},
 		"map": {
 			name:        "map",
-			description: "Displays next 20 locations",
-			callback:    commandMap,
+			description: "Displays some locations",
+			command:     commandMap,
 		},
 		"mapb": {
 			name:        "mapb",
-			description: "Displays previous 20 locations",
-			callback:    commandMapB,
+			description: "Displays previous locations",
+			command:     commandMapB,
 		},
 	}
 }
 
 // outputs
-func commandHelp() error {
+func commandHelp(cfg *config) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -54,18 +55,31 @@ func commandHelp() error {
 }
 
 // exits program
-func commandExit() error {
+func commandExit(cfg *config) error {
 	os.Exit(0)
 	return nil
 }
 
-// displays next 20 locations
-func commandMap() error {
+// displays next locations
+func commandMap(cfg *config) error {
 
+	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.nextLocationAreaURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Location areas:")
+	for _, area := range resp.Results {
+		fmt.Print("- %s\n", area.Name)
+	}
+
+	cfg.nextLocationAreaURL = resp.Next
+	cfg.prevLocationAreaURL = resp.Previous
 	return nil
 }
 
 // displays previous locations
-func commandMapB() error {
+func commandMapB(cfg *config) error {
+
 	return nil
 }

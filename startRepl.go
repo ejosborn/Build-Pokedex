@@ -8,7 +8,7 @@ import (
 )
 
 // reads input and calls command that user typed in
-func startRepl() {
+func startRepl(cfg *config) {
 	readInput := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -21,9 +21,9 @@ func startRepl() {
 
 		commandName := input[0]
 
-		command, exist := getCommands()[commandName]
+		commandWord, exist := getCommands()[commandName]
 		if exist {
-			err := command.callback()
+			err := commandWord.command(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
