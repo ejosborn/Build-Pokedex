@@ -12,5 +12,6 @@ func main() {
 	cfg := config{
 		pokeapiClient: pokeapi.NewClient(),
 	}
+
 	startRepl(&cfg)
 }

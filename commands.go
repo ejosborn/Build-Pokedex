@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -21,11 +20,6 @@ func getCommands() map[string]cliCommand {
 			description: "Displays a help message",
 			command:     commandHelp,
 		},
-		"exit": {
-			name:        "exit",
-			description: "Exits the Program",
-			command:     commandExit,
-		},
 		"map": {
 			name:        "map",
 			description: "Displays next page of locations",
@@ -35,6 +29,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Displays previous page of locations",
 			command:     commandMapB,
+		},
+		"exit": {
+			name:        "exit",
+			description: "Exits the Program",
+			command:     commandExit,
 		},
 	}
 }
@@ -65,7 +64,7 @@ func commandMap(cfg *config) error {
 
 	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.nextLocationAreaURL)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmt.Println("Location areas:")
@@ -83,18 +82,18 @@ func commandMap(cfg *config) error {
 func commandMapB(cfg *config) error {
 
 	if cfg.prevLocationAreaURL == nil {
-		return errors.New("You are at the beginning")
+		return errors.New("You are at the first page")
 	}
 	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.prevLocationAreaURL)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmt.Println("Location areas:")
 	for _, area := range resp.Results {
 		fmt.Printf("- %s\n", area.Name)
 	}
-	fmt.Println("")
+	fmt.Println()
 
 	cfg.nextLocationAreaURL = resp.Next
 	cfg.prevLocationAreaURL = resp.Previous

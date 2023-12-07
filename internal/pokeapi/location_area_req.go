@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// requests api
 func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 
 	endpoint := "/location-area"
