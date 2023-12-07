@@ -9,7 +9,7 @@ import (
 
 type Cache struct {
 	cacheInfo map[string]cacheEntry
-	mutex     sync.Mutex
+	mux       *sync.Mutex
 }
 
 type cacheEntry struct {
@@ -17,26 +17,54 @@ type cacheEntry struct {
 	val       []byte
 }
 
-// creates new cache and stores in cacheInfo map
-func newCache() error {
+// creates new cache and tracks time before deleting all
+func newCache(holdInCache time.Duration) Cache {
+	c := Cache{
+		cacheInfo: make(map[string]cacheEntry),
+		mux:       &sync.Mutex{},
+	}
 
-	return nil
+	go c.reapLoop(holdInCache)
+
+	return c
 }
 
 // adds new entry to cache
-func add(key string, val []byte) error {
+func (c *Cache) add(key string, info []byte) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
 
-	return nil
+	c.cacheInfo[key] = cacheEntry{
+		createdAt: time.Now(),
+		val:       info,
+	}
 }
 
 // gets and entry from cache
-func get(key string) ([]byte, bool, error) {
-	val := make([]byte, 5)
-	return val, true, nil
+func (c *Cache) get(key string) ([]byte, bool) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
+	val, ok := c.cacheInfo[key]
+	return val.val, ok
 }
 
-// removes all entries inside cacheInfo map
-func reapLoop() error {
+// loops through cache
+func (c *Cache) reapLoop(holdInCache time.Duration) {
+	timeTick := time.NewTicker(holdInCache)
+	for range timeTick.C {
+		c.reapItem(time.Now().UTC(), holdInCache)
+	}
+}
 
-	return nil
+// removes item that is passed
+func (c *Cache) reapItem(now time.Time, holdInCache time.Duration) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
+	for i, r := range c.cacheInfo {
+		if r.createdAt.Before(now.Add(-holdInCache)) {
+			delete(c.cacheInfo, i)
+		}
+	}
 }
