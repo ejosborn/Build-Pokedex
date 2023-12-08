@@ -8,7 +8,7 @@ import (
 )
 
 // requests api
-func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
+func (c *Client) ListLocationAreas(pageURL *string) (RespShallowLocations, error) {
 
 	endpoint := "/location-area"
 	fullURL := baseURL + endpoint
@@ -17,33 +17,45 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 		fullURL = *pageURL
 	}
 
+	if val, ok := c.cache.get(fullURL); ok {
+		locationsResp := RespShallowLocations{}
+		err := json.Unmarshal(val, &locationsResp)
+		if err != nil {
+			return RespShallowLocations{}, err
+		}
+
+		return locationsResp, nil
+	}
+
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
-		return LocationAreasResp{}, err
+		return RespShallowLocations{}, err
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return LocationAreasResp{}, err
+		return RespShallowLocations{}, err
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode > 399 {
-		return LocationAreasResp{}, fmt.Errorf("bad status code: %v", resp.StatusCode)
+		return RespShallowLocations{}, fmt.Errorf("bad status code: %v", resp.StatusCode)
 	}
 
 	dat, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return LocationAreasResp{}, err
+		return RespShallowLocations{}, err
 	}
 
 	locationAreasResp := LocationAreasResp{}
 	err = json.Unmarshal(dat, &locationAreasResp)
 	if err != nil {
-		return LocationAreasResp{}, err
+		return RespShallowLocations{}, err
 	}
 
-	return locationAreasResp, nil
+	c.cache.add(fullURL, dat)
+
+	return locationsResp, nil
 
 }

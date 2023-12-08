@@ -71,7 +71,7 @@ func commandMap(cfg *config) error {
 	for _, area := range resp.Results {
 		fmt.Printf("- %s\n", area.Name)
 	}
-	fmt.Println("")
+	fmt.Println()
 
 	cfg.nextLocationAreaURL = resp.Next
 	cfg.prevLocationAreaURL = resp.Previous
