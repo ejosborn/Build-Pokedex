@@ -18,53 +18,54 @@ type cacheEntry struct {
 }
 
 // creates new cache and tracks time before deleting all
-func newCache(holdInCache time.Duration) Cache {
+func NewCache(t time.Duration) Cache {
 	c := Cache{
 		cache: make(map[string]cacheEntry),
 		mux:   &sync.Mutex{},
 	}
 
-	go c.reapLoop(holdInCache)
+	go c.reapLoop(t)
 
 	return c
 }
 
 // adds new entry to cache
-func (c *Cache) add(key string, info []byte) {
+func (c *Cache) Add(key string, info []byte) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
 	c.cache[key] = cacheEntry{
-		createdAt: time.Now(),
 		val:       info,
+		createdAt: time.Now().UTC(),
 	}
 }
 
-// gets and entry from cache
-func (c *Cache) get(key string) ([]byte, bool) {
+// gets an entry from cache
+func (c *Cache) Get(key string) ([]byte, bool) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	val, ok := c.cache[key]
-	return val.val, ok
+	cacheE, ok := c.cache[key]
+	return cacheE.val, ok
 }
 
-// loops through cache
-func (c *Cache) reapLoop(holdInCache time.Duration) {
-	timeTick := time.NewTicker(holdInCache)
-	for range timeTick.C {
-		c.reapItem(time.Now().UTC(), holdInCache)
+// loops through cache tracking time in cache
+func (c *Cache) reapLoop(t time.Duration) {
+	ticker := time.NewTicker(t)
+	for range ticker.C {
+		c.reapItem(t)
 	}
 }
 
-// removes item that is passed
-func (c *Cache) reapItem(now time.Time, holdInCache time.Duration) {
+// deletes item in cache after its time is up
+func (c *Cache) reapItem(t time.Duration) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	for i, r := range c.cache {
-		if r.createdAt.Before(now.Add(-holdInCache)) {
-			delete(c.cache, i)
+	timeNow := time.Now().UTC().Add(-t)
+	for k, v := range c.cache {
+		if v.createdAt.Before(timeNow) {
+			delete(c.cache, k)
 		}
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ejosborn/Build-Pokedex/pokecache"
+	"github.com/ejosborn/Build-Pokedex/internal/pokecache"
 )
 
 const baseURL = "https://pokeapi.co/api/v2"
@@ -21,14 +21,4 @@ func NewClient(inCache, wait time.Duration) Client {
 			Timeout: wait,
 		},
 	}
-}
-
-type LocationAreasResp struct {
-	Count    int     `json:"count"`
-	Next     *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
 }
