@@ -1,4 +1,4 @@
-package pokeapi
+package main
 
 type Pokedex struct {
 	pokedex map[string]Pokemon
@@ -43,4 +43,5 @@ func NewPokemon() error {
 
 func (p *Pokedex) AddPokemon() error {
 
+	return nil
 }
