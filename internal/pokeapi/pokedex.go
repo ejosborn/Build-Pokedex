@@ -1,4 +1,4 @@
-package main
+package pokeapi
 
 type Pokedex struct {
 	pokedex map[string]Pokemon
@@ -26,10 +26,21 @@ type PokemonTypes struct {
 	secondaryT string
 }
 
-func NewPokemon() {
+func NewPokedex() Pokedex {
+	p := Pokedex{
+		pokedex: make(map[string]Pokemon),
+	}
 
+	return p
 }
 
-func AddPokemon() {
+func NewPokemon() error {
+
+	//checks if in pokedex
+
+	return nil
+}
+
+func (p *Pokedex) AddPokemon() error {
 
 }

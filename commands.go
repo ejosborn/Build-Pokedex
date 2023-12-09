@@ -165,7 +165,7 @@ func commandCatch(cfg *config) error {
 
 	fmt.Printf("%s was caught\n", *cfg.userInput)
 
-	//add to pokedex map
+	//checks if pokemon is in pokedex
 
 	return nil
 }
