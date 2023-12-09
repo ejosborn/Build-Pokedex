@@ -6,7 +6,8 @@ import (
 	"os"
 )
 
-const baseURL = "https://pokeapi.co/api/v2/location-area/"
+const locationAreaURL = "https://pokeapi.co/api/v2/location-area/"
+const pokemonSearchURL = "https://pokeapi.co/api/v2/pokemon/"
 
 type cliCommand struct {
 	name        string
@@ -36,6 +37,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Explore a location to see what Pokemon there are",
 			command:     commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a pokemon!",
+			command:     commandCatch,
 		},
 		"exit": {
 			name:        "exit",
@@ -114,7 +120,7 @@ func commandExplore(cfg *config) error {
 		return errors.New("Location doesn't exist")
 	}
 
-	search := baseURL + *cfg.userInput
+	search := locationAreaURL + *cfg.userInput
 
 	cfg.searchLink = &search
 
@@ -129,6 +135,26 @@ func commandExplore(cfg *config) error {
 	}
 
 	fmt.Println()
+
+	return nil
+}
+
+// tries to catch pokemon
+func commandCatch(cfg *config) error {
+	if cfg.userInput == nil {
+		return errors.New("Please enter a pokemon to catch")
+	}
+
+	search := pokemonSearchURL + *cfg.userInput
+
+	cfg.searchLink = &search
+
+	resp, err := cfg.pokeapiClient.ListPokemonInfo(cfg.searchLink)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Throwing a Pokeball at ", cfg.userInput)
 
 	return nil
 }
