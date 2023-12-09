@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const baseURL = "https://pokeapi.co/api/v2/location-area/"
+
 type cliCommand struct {
 	name        string
 	description string
@@ -105,13 +107,14 @@ func commandMapB(cfg *config) error {
 	return nil
 }
 
+// lists pokemon found at a location
 func commandExplore(cfg *config) error {
 
 	if cfg.userInput == nil {
 		return errors.New("Location doesn't exist")
 	}
 
-	search := "https://pokeapi.co/api/v2/location-area/" + *cfg.userInput
+	search := baseURL + *cfg.userInput
 
 	cfg.searchLink = &search
 

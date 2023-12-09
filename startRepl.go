@@ -22,7 +22,6 @@ func startRepl(cfg *config) {
 		commandName := input[0]
 
 		if len(input) == 2 {
-			fmt.Println(input[1])
 			cfg.userInput = &input[1]
 		}
 

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// requests api
+// requests PokeAPI and gets a list of locations in pokemon
 func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 
 	fullURL := baseURL + "/location-area"
