@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
 )
 
@@ -154,7 +155,17 @@ func commandCatch(cfg *config) error {
 		return err
 	}
 
-	fmt.Printf("Throwing a Pokeball at ", cfg.userInput)
+	fmt.Printf("Throwing a Pokeball at %v...\n", *cfg.userInput)
+	catch := rand.Intn(resp.BaseExperience)
+
+	if catch > 40 {
+		fmt.Printf("%s escaped\n", *cfg.userInput)
+		return nil
+	}
+
+	fmt.Printf("%s was caught\n", *cfg.userInput)
+
+	//add to pokedex map
 
 	return nil
 }
