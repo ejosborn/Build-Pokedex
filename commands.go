@@ -30,6 +30,11 @@ func getCommands() map[string]cliCommand {
 			description: "Displays previous page of locations",
 			command:     commandMapB,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Explore a location to see what Pokemon there are",
+			command:     commandExplore,
+		},
 		"exit": {
 			name:        "exit",
 			description: "Exits the Program",
@@ -97,5 +102,30 @@ func commandMapB(cfg *config) error {
 
 	cfg.nextLocationAreaURL = resp.Next
 	cfg.prevLocationAreaURL = resp.Previous
+	return nil
+}
+
+func commandExplore(cfg *config) error {
+
+	if cfg.userInput == nil {
+		return errors.New("Location doesn't exist")
+	}
+
+	search := "https://pokeapi.co/api/v2/location-area/" + *cfg.userInput
+
+	cfg.searchLink = &search
+
+	resp, err := cfg.pokeapiClient.ListLocationAreasPokemon(cfg.searchLink)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Exploring %s", *cfg.userInput)
+	for _, pokemon := range resp.PokemonEncounters {
+		fmt.Printf("- %s\n", pokemon.Pokemon.Name)
+	}
+
+	fmt.Println()
+
 	return nil
 }

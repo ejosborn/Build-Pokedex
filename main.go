@@ -8,6 +8,8 @@ import (
 
 type config struct {
 	pokeapiClient       pokeapi.Client
+	userInput           *string
+	searchLink          *string
 	nextLocationAreaURL *string
 	prevLocationAreaURL *string
 }
