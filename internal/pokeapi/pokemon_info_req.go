@@ -7,30 +7,30 @@ import (
 )
 
 // requests PokeAPI and gets info
-func (c *Client) ListPokemonInfo(pageURL *string) (PokemonInfoResp, error) {
+func (c *Client) ListPokemonInfo(pageURL *string) (Pokemon, error) {
 	fullURL := *pageURL
 
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
-		return PokemonInfoResp{}, err
+		return Pokemon{}, err
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return PokemonInfoResp{}, err
+		return Pokemon{}, err
 	}
 
 	defer resp.Body.Close()
 
 	dat, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return PokemonInfoResp{}, err
+		return Pokemon{}, err
 	}
 
-	pokemonInfoResp := PokemonInfoResp{}
+	pokemonInfoResp := Pokemon{}
 	err = json.Unmarshal(dat, &pokemonInfoResp)
 	if err != nil {
-		return PokemonInfoResp{}, err
+		return Pokemon{}, err
 	}
 
 	return pokemonInfoResp, nil
