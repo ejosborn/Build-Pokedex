@@ -178,5 +178,25 @@ func commandCatch(cfg *config) error {
 // outputs all info (stats and type(s)) of pokemon user has caught
 func commandInspect(cfg *config) error {
 
+	if cfg.userInput == nil {
+		return errors.New("Please enter a pokemon to inspect that you have already caught")
+	}
+
+	found, ok := cfg.caughtPokemon[*cfg.userInput]
+	if !ok {
+		return errors.New("There is no data on this pokemon. Please catch it to update the pokedex")
+	}
+
+	fmt.Println("Name:", found.Name)
+	fmt.Println("Height:", found.Height)
+	fmt.Println("Weight:", found.Weight)
+	for _, stat := range found.Stats {
+		fmt.Printf("  -%s: %v\n", stat.Stat.Name, stat.BaseStat)
+	}
+
+	for _, types := range found.Types {
+		fmt.Printf("  -%s\n", types.Type.Name)
+	}
+
 	return nil
 }
