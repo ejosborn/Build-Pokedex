@@ -41,8 +41,13 @@ func getCommands() map[string]cliCommand {
 		},
 		"catch": {
 			name:        "catch",
-			description: "Catch a pokemon!",
+			description: "Try to catch a pokemon",
 			command:     commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect a pokemon that you have caught",
+			command:     commandInspect,
 		},
 		"exit": {
 			name:        "exit",
@@ -165,7 +170,13 @@ func commandCatch(cfg *config) error {
 
 	fmt.Printf("%s was caught\n", *cfg.userInput)
 
-	//checks if pokemon is in pokedex
+	cfg.caughtPokemon[resp.Name] = resp
+
+	return nil
+}
+
+// outputs all info (stats and type(s)) of pokemon user has caught
+func commandInspect(cfg *config) error {
 
 	return nil
 }

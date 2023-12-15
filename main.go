@@ -12,13 +12,15 @@ type config struct {
 	searchLink          *string
 	nextLocationAreaURL *string
 	prevLocationAreaURL *string
+	caughtPokemon       map[string]pokeapi.Pokemon
 }
 
 func main() {
 	pokeClient := pokeapi.NewClient(5*time.Second, 5*time.Minute)
-	cfg := config{
+	cfg := &config{
+		caughtPokemon: map[string]pokeapi.Pokemon{},
 		pokeapiClient: pokeClient,
 	}
 
-	startRepl(&cfg)
+	startRepl(cfg)
 }
