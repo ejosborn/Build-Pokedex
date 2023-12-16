@@ -49,6 +49,11 @@ func getCommands() map[string]cliCommand {
 			description: "Inspect a pokemon that you have caught",
 			command:     commandInspect,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "View all the pokemon you have caught",
+			command:     commandPokedex,
+		},
 		"exit": {
 			name:        "exit",
 			description: "Exits the Program",
@@ -191,11 +196,22 @@ func commandInspect(cfg *config) error {
 	fmt.Println("Height:", found.Height)
 	fmt.Println("Weight:", found.Weight)
 	for _, stat := range found.Stats {
-		fmt.Printf("  -%s: %v\n", stat.Stat.Name, stat.BaseStat)
+		fmt.Printf("  - %s: %v\n", stat.Stat.Name, stat.BaseStat)
 	}
 
 	for _, types := range found.Types {
-		fmt.Printf("  -%s\n", types.Type.Name)
+		fmt.Printf("  - %s\n", types.Type.Name)
+	}
+
+	return nil
+}
+
+func commandPokedex(cfg *config) error {
+	if len(cfg.caughtPokemon) == 0 {
+		return errors.New("There are no pokedex entries yet. Catch pokemon to add them to the pokedex")
+	}
+	for _, pokemon := range cfg.caughtPokemon {
+		fmt.Printf("  - %s\n", pokemon.Name)
 	}
 
 	return nil
