@@ -206,10 +206,14 @@ func commandInspect(cfg *config) error {
 	return nil
 }
 
+// Lists all of the caught pokemon
 func commandPokedex(cfg *config) error {
 	if len(cfg.caughtPokemon) == 0 {
 		return errors.New("There are no pokedex entries yet. Catch pokemon to add them to the pokedex")
 	}
+
+	fmt.Printf("Your pokedex:\n")
+
 	for _, pokemon := range cfg.caughtPokemon {
 		fmt.Printf("  - %s\n", pokemon.Name)
 	}
