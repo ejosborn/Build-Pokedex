@@ -1,6 +1,6 @@
 # Build-Pokedex
 
-This is a Read Evaluate Print Loop (REPL) program that uses PokeAPI to fetch information based on user input. I have been learning the basics of Golang and wanted to create a project that would challenge me and also use http requests. I decided to go with this project because I have fond memories of watching and playing Pokemon while I was younger and came upon the PokeAPI recently. After looking through the documentation, I came up with the idea to create a Pokedex that will help users explore areas in Pokemon, catch Pokemon, and let the user learn the stats of the pokemon in the user's Pokedex.
+This is a Read Evaluate Print Loop (REPL) program that uses PokeAPI to fetch information based on user input. I have been learning the basics of Golang and wanted to create a project that would challenge me and also use http requests. I decided to go with this project because I have fond memories of watching and playing Pokemon while I was younger and came upon the PokeAPI. After looking through the documentation, I came up with the idea to create a Pokedex that will help users explore areas in Pokemon, catch Pokemon, and let the user see the stats of the pokemon in the user's Pokedex.
 
 ## Setup
 
